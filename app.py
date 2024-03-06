@@ -7,7 +7,7 @@ from omegaconf import OmegaConf
 import torch
 from PIL import Image
 from pipelines import TwoStagePipeline
-
+from huggingface_hub import hf_hub_download
 
 pipeline = None
 
@@ -57,6 +57,11 @@ stage1_sampler_config = stage1_config.sampler
 stage1_model_config = stage1_config.models
 stage2_model_config = stage2_config.models
 
+xyz_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="xyz.pth")
+pixel_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="pixel.pth")
+stage1_model_config.resume = pixel_path
+stage2_model_config.resume = xyz_path
+
 pipeline = TwoStagePipeline(
     stage1_model_config,
     stage2_model_config,
@@ -95,15 +100,15 @@ with gr.Blocks() as demo:
         xyz_ouput,
     ]
     default_params = [1234, 5.5, 50]
-    gr.Examples(
-        [ [i] + default_params for i in
-            [
-                "examples/3D卡通狗.png",
-                "examples/大头泡泡马特.png"
-            ]
-        ],
-        inputs=inputs,
-    )
+    # gr.Examples(
+    #     [ [i] + default_params for i in
+    #         [
+    #             "examples/3D卡通狗.png",
+    #             "examples/大头泡泡马特.png"
+    #         ]
+    #     ],
+    #     inputs=inputs,
+    # )
 
     text_button.click(gen_image, inputs=inputs, outputs=outputs)
     demo.queue().launch()

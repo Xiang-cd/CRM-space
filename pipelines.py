@@ -150,7 +150,7 @@ if __name__ == "__main__":
         stage2_sampler_config,
     )
 
-    img = Image.open("/mnt/vepfs/xiang-cd/workspace/3D/ImageDream/extern/ImageDream/assets/astronaut.png")
+    img = Image.open("assets/astronaut.png")
     rt_dict = pipeline(img)
     stage1_images = rt_dict["stage1_images"]
     stage2_images = rt_dict["stage2_images"]

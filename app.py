@@ -56,10 +56,10 @@ stage1_sampler_config = stage1_config.sampler
 stage1_model_config = stage1_config.models
 stage2_model_config = stage2_config.models
 
-# xyz_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="xyz.pth")
-# pixel_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="pixel.pth")
-# stage1_model_config.resume = pixel_path
-# stage2_model_config.resume = xyz_path
+xyz_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="xyz.pth")
+pixel_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="pixel.pth")
+stage1_model_config.resume = pixel_path
+stage2_model_config.resume = xyz_path
 
 pipeline = TwoStagePipeline(
     stage1_model_config,

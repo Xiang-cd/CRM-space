@@ -45,7 +45,6 @@ parser.add_argument(
     help="config for stage2",
 )
 
-parser.add_argument("--fp16", action="store_true")
 parser.add_argument("--device", type=str, default="cuda")
 args = parser.parse_args()
 
@@ -57,10 +56,10 @@ stage1_sampler_config = stage1_config.sampler
 stage1_model_config = stage1_config.models
 stage2_model_config = stage2_config.models
 
-xyz_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="xyz.pth")
-pixel_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="pixel.pth")
-stage1_model_config.resume = pixel_path
-stage2_model_config.resume = xyz_path
+# xyz_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="xyz.pth")
+# pixel_path = hf_hub_download(repo_id="Xiang-cd/test-6view", filename="pixel.pth")
+# stage1_model_config.resume = pixel_path
+# stage2_model_config.resume = xyz_path
 
 pipeline = TwoStagePipeline(
     stage1_model_config,
@@ -68,7 +67,7 @@ pipeline = TwoStagePipeline(
     stage1_sampler_config,
     stage2_sampler_config,
     device=args.device,
-    dtype=torch.float16 if args.fp16 else torch.float32,
+    dtype=torch.float16
 )
 
 with gr.Blocks() as demo:

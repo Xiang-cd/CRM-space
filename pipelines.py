@@ -57,9 +57,14 @@ class TwoStagePipeline(object):
         ddim_eta=0.0,
     ):
         if type(pixel_img) == str:
-            pixel_img = Image.open(pixel_img).convert("RGB")
-        elif isinstance(pixel_img, Image.Image):
-            pixel_img = pixel_img.convert("RGB")
+            pixel_img = Image.open(pixel_img)
+
+        if isinstance(pixel_img, Image.Image):
+            if pixel_img.mode == "RGBA":
+                background = Image.new('RGBA', pixel_img.size, (0, 0, 0, 0))
+                pixel_img = Image.alpha_composite(background, pixel_img).convert("RGB")
+            else:
+                pixel_img = pixel_img.convert("RGB")
         else:
             raise
         uc = self.stage1_sampler.model.get_learned_conditioning([neg_texts]).to(self.device)
@@ -89,8 +94,9 @@ class TwoStagePipeline(object):
 
     def stage2_sample(self, pixel_img, stage1_images):
         if type(pixel_img) == str:
-            pixel_img = Image.open(pixel_img).convert("RGB")
-        elif isinstance(pixel_img, Image.Image):
+            pixel_img = Image.open(pixel_img)
+
+        if isinstance(pixel_img, Image.Image):
             if pixel_img.mode == "RGBA":
                 background = Image.new('RGBA', pixel_img.size, (0, 0, 0, 0))
                 pixel_img = Image.alpha_composite(background, pixel_img).convert("RGB")

@@ -91,7 +91,11 @@ class TwoStagePipeline(object):
         if type(pixel_img) == str:
             pixel_img = Image.open(pixel_img).convert("RGB")
         elif isinstance(pixel_img, Image.Image):
-            pixel_img = pixel_img.convert("RGB")
+            if pixel_img.mode == "RGBA":
+                background = Image.new('RGBA', pixel_img.size, (0, 0, 0, 0))
+                pixel_img = Image.alpha_composite(background, pixel_img).convert("RGB")
+            else:
+                pixel_img = pixel_img.convert("RGB")
         else:
             raise
         stage2_images = self.stage2_sampler.i2iStage2(

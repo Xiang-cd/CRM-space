@@ -60,12 +60,12 @@ def add_background(image, bg_color=(255, 255, 255)):
     return Image.alpha_composite(background, image)
 
 
-def preprocess_image(input_image, do_remove_background, foreground_ratio, backgroud_color):
+def preprocess_image(input_image, do_remove_background, force_remove, foreground_ratio, backgroud_color):
     """
     input image is a pil image in RGBA, return RGB image
     """
     if do_remove_background:
-        image = remove_background(input_image, rembg_session)
+        image = remove_background(input_image, rembg_session, force_remove)
     image = do_resize_content(image, foreground_ratio)
     image = add_background(image, backgroud_color)
     return image.convert("RGB")
@@ -136,7 +136,9 @@ with gr.Blocks() as demo:
                 processed_image = gr.Image(label="Processed Image", interactive=False, type="pil", image_mode="RGB")
             with gr.Row():
                 with gr.Column():
-                    do_remove_background = gr.Checkbox(label="Remove Background", value=True)
+                    with gr.Row():
+                        do_remove_background = gr.Checkbox(label="Remove Background", value=True)
+                        force_remove = gr.Checkbox(label="Force Remove", value=False)
                     back_groud_color = gr.ColorPicker(label="Background Color")
                     foreground_ratio = gr.Slider(
                         label="Foreground Ratio",
@@ -177,7 +179,7 @@ with gr.Blocks() as demo:
 
     text_button.click(fn=check_input_image, inputs=[image_input]).success(
         fn=preprocess_image,
-        inputs=[image_input, do_remove_background, foreground_ratio, back_groud_color],
+        inputs=[image_input, do_remove_background, force_remove, foreground_ratio, back_groud_color],
         outputs=[processed_image],
     ).success(
         fn=gen_image,

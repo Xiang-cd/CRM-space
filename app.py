@@ -59,14 +59,25 @@ def add_background(image, bg_color=(255, 255, 255)):
     background = Image.new("RGBA", image.size, bg_color)
     return Image.alpha_composite(background, image)
 
+def expand_to_square(image, bg_color=(0, 0, 0, 0)):
+    # expand image to 1:1
+    width, height = image.size
+    if width == height:
+        return image
+    new_size = (max(width, height), max(width, height))
+    new_image = Image.new("RGBA", new_size, bg_color)
+    paste_position = ((new_size[0] - width) // 2, (new_size[1] - height) // 2)
+    new_image.paste(image, paste_position)
+    return new_image
 
-def preprocess_image(input_image, do_remove_background, force_remove, foreground_ratio, backgroud_color):
+def preprocess_image(image, do_remove_background, force_remove, foreground_ratio, backgroud_color):
     """
     input image is a pil image in RGBA, return RGB image
     """
     if do_remove_background:
-        image = remove_background(input_image, rembg_session, force_remove)
+        image = remove_background(image, rembg_session, force_remove)
     image = do_resize_content(image, foreground_ratio)
+    image = expand_to_square(image)
     image = add_background(image, backgroud_color)
     return image.convert("RGB")
 

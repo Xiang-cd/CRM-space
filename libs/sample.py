@@ -41,6 +41,7 @@ class ImageDreamDiffusion:
         self.image_transform = T.Compose(
             [
                 T.Resize((size, size)),
+                T.CenterCrop(size),
                 T.ToTensor(),
                 T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
             ]

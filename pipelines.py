@@ -130,6 +130,14 @@ class TwoStagePipeline(object):
     def set_seed(self, seed):
         self.stage1_sampler.seed = seed
         self.stage2_sampler.seed = seed
+    
+    def to(self, device):
+        self.device = device
+        self.stage1_sampler.device = device
+        self.stage2_sampler.device = device
+        self.stage1_model = self.stage1_model.to(device)
+        self.stage2_model = self.stage2_model.to(device)
+
 
     def __call__(self, pixel_img, prompt="3D assets", scale=5, step=50):
         pixel_img = do_resize_content(pixel_img, self.resize_rate)

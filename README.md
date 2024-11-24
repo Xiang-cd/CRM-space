@@ -10,3 +10,11 @@ pinned: false
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+
+## usage
+link released model to models dir as following:
+```shell
+models
+├── pixel.pth
+└── xyz.pth
+```
